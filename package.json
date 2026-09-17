@@ -1,0 +1,17 @@
+{
+  "name": "atom-journey-server",
+  "version": "1.0.0",
+  "description": "Server Tahap 2 untuk Atom Journey — simpan data siswa & ekspor Excel terproteksi password guru",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "better-sqlite3": "^11.3.0",
+    "exceljs": "^4.4.0"
+  }
+}

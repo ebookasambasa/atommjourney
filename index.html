@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atom Journey — Perkembangan Model Atom</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3FAFF;
+    --bg-alt:#FFFFFF;
+    --ink:#1C2541;
+    --ink-soft:#5A6B92;
+    --blue-100:#DEF0FF;
+    --blue-300:#8FD3FF;
+    --blue-500:#38A6FF;
+    --blue-700:#1C6BB8;
+    --pink-100:#FFE6F2;
+    --pink-300:#FFACD6;
+    --pink-500:#FF6FB2;
+    --pink-700:#D63E86;
+    --line:#CFE8FB;
+    --shadow:0 10px 28px rgba(28,107,184,.14);
+    --shadow-soft:0 4px 14px rgba(28,107,184,.10);
+    --r-lg:26px;
+    --r-md:16px;
+    --r-sm:10px;
+    --font-display:'Space Grotesk', 'Segoe UI', sans-serif;
+    --font-body:'Manrope', 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141A2E;
+      --bg-alt:#1C2340;
+      --ink:#EAF1FF;
+      --ink-soft:#A9B7DE;
+      --blue-100:#233355;
+      --blue-300:#3E6FA8;
+      --blue-500:#4FB3FF;
+      --blue-700:#8FD3FF;
+      --pink-100:#3A2338;
+      --pink-300:#8A4870;
+      --pink-500:#FF7FBC;
+      --pink-700:#FFB0D9;
+      --line:#2C3A5E;
+      --shadow:0 10px 28px rgba(0,0,0,.35);
+      --shadow-soft:0 4px 14px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141A2E; --bg-alt:#1C2340; --ink:#EAF1FF; --ink-soft:#A9B7DE;
+    --blue-100:#233355; --blue-300:#3E6FA8; --blue-500:#4FB3FF; --blue-700:#8FD3FF;
+    --pink-100:#3A2338; --pink-300:#8A4870; --pink-500:#FF7FBC; --pink-700:#FFB0D9;
+    --line:#2C3A5E; --shadow:0 10px 28px rgba(0,0,0,.35); --shadow-soft:0 4px 14px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); margin:0; letter-spacing:-0.01em;}
+  p{margin:0;}
+  button{font-family:var(--font-body); cursor:pointer;}
+  textarea{font-family:var(--font-body);}
+  :focus-visible{outline:3px solid var(--pink-500); outline-offset:2px;}
+  [hidden]{display:none !important;}
+
+  .wrap{max-width:1000px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- LOGIN SCREEN ---------- */
+  #screen-login{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:40px 20px;
+    background:
+      radial-gradient(circle at 12% 18%, var(--pink-100) 0%, transparent 45%),
+      radial-gradient(circle at 88% 82%, var(--blue-100) 0%, transparent 45%),
+      var(--bg);
+  }
+  .login-card{
+    width:100%; max-width:640px;
+    text-align:center;
+  }
+  .eyebrow-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--bg-alt); border:1px solid var(--line);
+    padding:6px 14px; border-radius:999px;
+    font-size:13px; color:var(--ink-soft); font-weight:600;
+    margin-bottom:22px;
+  }
+  .brand-title{
+    font-size:clamp(40px,8vw,64px);
+    font-weight:700;
+    background:linear-gradient(100deg, var(--blue-700) 10%, var(--pink-500) 55%, var(--pink-700) 90%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    line-height:1.02;
+  }
+  .brand-sub{
+    font-family:var(--font-display);
+    font-size:clamp(15px,2.6vw,19px);
+    color:var(--ink-soft);
+    margin-top:10px;
+    font-weight:500;
+  }
+
+  .trailmap{ width:100%; max-width:560px; margin:30px auto 8px; display:block; }
+  .trail-path{
+    fill:none; stroke:var(--pink-300); stroke-width:3; stroke-dasharray:8 10;
+    stroke-linecap:round;
+    stroke-dashoffset:1000;
+    animation:draw 1.8s ease forwards;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .trail-node circle{ fill:var(--bg-alt); stroke:var(--blue-500); stroke-width:3; }
+  .trail-node text{ font-family:var(--font-display); font-size:13px; font-weight:700; fill:var(--blue-700); }
+  .trail-node.finish circle{ stroke:var(--pink-500); }
+  .trail-node.finish text{ fill:var(--pink-700); }
+
+  .login-copy{
+    color:var(--ink-soft); font-size:15px; max-width:480px; margin:18px auto 0;
+  }
+
+  .login-form{
+    margin-top:28px; background:var(--bg-alt); border:1px solid var(--line);
+    border-radius:var(--r-lg); box-shadow:var(--shadow);
+    padding:28px; text-align:left;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .field label{ display:block; font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; }
+  .field input{
+    width:100%; padding:12px 14px; border-radius:var(--r-sm);
+    border:1.5px solid var(--line); background:var(--bg);
+    color:var(--ink); font-size:16px;
+  }
+  .field input:focus{ border-color:var(--blue-500); }
+  .btn{
+    border:none; border-radius:999px; padding:14px 26px;
+    font-weight:700; font-size:15px; font-family:var(--font-display);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{
+    background:linear-gradient(100deg, var(--blue-500), var(--pink-500));
+    color:#fff; box-shadow:var(--shadow-soft);
+  }
+  .btn-primary:hover{ box-shadow:var(--shadow); }
+  .btn-ghost{ background:transparent; color:var(--blue-700); border:1.5px solid var(--line); }
+  .login-note{ font-size:12.5px; color:var(--ink-soft); text-align:center; }
+  .welcome-back{
+    background:var(--pink-100); color:var(--pink-700); border-radius:var(--r-sm);
+    padding:10px 14px; font-size:13.5px; font-weight:600; display:none;
+  }
+
+  /* ---------- APP SHELL ---------- */
+  #screen-app{ min-height:100vh; padding-bottom:60px; }
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--bg-alt); border-bottom:1px solid var(--line);
+    padding:14px 20px;
+  }
+  .topbar-inner{
+    max-width:1000px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .logo-mini{ font-family:var(--font-display); font-weight:700; font-size:18px; display:flex; align-items:center; gap:8px; }
+  .logo-mini .dot{ width:10px; height:10px; border-radius:50%; background:linear-gradient(120deg,var(--blue-500),var(--pink-500)); display:inline-block; }
+  .student-badge{
+    display:flex; align-items:center; gap:10px;
+    background:var(--blue-100); color:var(--blue-700);
+    padding:6px 14px; border-radius:999px; font-size:13px; font-weight:700;
+  }
+  .student-badge .avatar{
+    width:24px; height:24px; border-radius:50%;
+    background:linear-gradient(140deg,var(--pink-500),var(--blue-500));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px;
+  }
+
+  .module-trail{
+    max-width:1000px; margin:18px auto 0; padding:0 20px;
+    display:flex; gap:10px;
+  }
+  .module-tab{
+    flex:1; text-align:center; padding:12px 10px; border-radius:var(--r-md);
+    background:var(--bg-alt); border:1.5px solid var(--line);
+    font-weight:700; font-family:var(--font-display); font-size:14px; color:var(--ink-soft);
+  }
+  .module-tab.active{
+    background:linear-gradient(100deg,var(--blue-500),var(--pink-500));
+    color:#fff; border-color:transparent; box-shadow:var(--shadow-soft);
+  }
+
+  main{ max-width:1000px; margin:0 auto; padding:22px 20px 0; }
+
+  .panel-head{ margin-bottom:18px; }
+  .panel-head h2{ font-size:clamp(22px,4vw,28px); }
+  .panel-head p{ color:var(--ink-soft); font-size:14.5px; margin-top:6px; max-width:640px; }
+
+  /* ---------- EXPLORATION: STATION TABS ---------- */
+  .station-row{
+    display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:16px;
+    scrollbar-width:thin;
+  }
+  .station-btn{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:6px;
+    background:var(--bg-alt); border:1.5px solid var(--line); border-radius:var(--r-md);
+    padding:10px 16px; min-width:104px; color:var(--ink-soft);
+  }
+  .station-btn .yr{ font-size:11px; font-weight:700; opacity:.8; }
+  .station-btn .nm{ font-family:var(--font-display); font-weight:700; font-size:13.5px; color:var(--ink); }
+  .station-btn.active{ border-color:var(--pink-500); background:var(--pink-100); box-shadow:var(--shadow-soft); }
+  .station-btn.active .nm{ color:var(--pink-700); }
+  .station-btn.done::after{ content:"✓ diamati"; font-size:10px; color:var(--blue-700); font-weight:700; }
+
+  .stage{
+    background:var(--bg-alt); border:1px solid var(--line); border-radius:var(--r-lg);
+    box-shadow:var(--shadow); padding:22px; display:flex; gap:24px; align-items:center;
+    flex-wrap:wrap;
+  }
+  .stage-visual{
+    flex:0 0 240px; height:220px; position:relative;
+    background:radial-gradient(circle, var(--blue-100) 0%, transparent 70%);
+    border-radius:var(--r-md);
+    perspective:820px;
+  }
+  .stage-info{ flex:1; min-width:220px; }
+  .stage-info .yr{ font-size:12.5px; font-weight:700; color:var(--pink-700); }
+  .stage-info h3{ font-size:clamp(20px,3vw,26px); margin-top:4px; }
+  .stage-hint{ margin-top:10px; font-size:13.5px; color:var(--ink-soft); }
+  .stage-nav{ display:flex; gap:10px; margin-top:16px; }
+  .stage-nav button{ border-radius:999px; padding:9px 16px; font-size:13px; font-weight:700; border:1.5px solid var(--line); background:var(--bg); color:var(--ink-soft); font-family:var(--font-display); }
+  .stage-nav button:hover{ border-color:var(--blue-500); color:var(--blue-700); }
+
+  /* ---------- ATOM VISUALS: CSS 3D TRANSFORM ---------- */
+  .atom3d-root{
+    position:absolute; top:50%; left:50%; width:0; height:0;
+    transform-style:preserve-3d;
+    animation:spin3d 15s linear infinite;
+  }
+  .atom3d-root.no-spin{ animation:none; transform:rotateX(10deg); }
+  @keyframes spin3d{ from{ transform:rotateX(10deg) rotateY(0deg); } to{ transform:rotateX(10deg) rotateY(360deg); } }
+  @keyframes spin3dz{ from{ transform:rotateZ(0deg); } to{ transform:rotateZ(360deg); } }
+
+  .node3d{ position:absolute; top:0; left:0; transform-style:preserve-3d; }
+
+  .nucleus-big{ width:150px; height:150px; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #fff8, transparent 42%), linear-gradient(140deg,var(--blue-500),var(--blue-700));
+    box-shadow:0 10px 24px rgba(28,107,184,.4), inset 0 0 24px rgba(0,0,0,.12); }
+  .nucleus-tiny{ width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #fff8, transparent 45%), linear-gradient(140deg,var(--blue-500),var(--blue-700));
+    box-shadow:0 4px 10px rgba(28,107,184,.4), 0 0 0 5px rgba(56,166,255,.16); }
+
+  .thomson-ball{ width:150px; height:150px; border-radius:50%;
+    background:radial-gradient(circle at 30% 25%, #fff6, transparent 40%), linear-gradient(140deg,var(--pink-300),var(--pink-500));
+    box-shadow:0 10px 24px rgba(214,62,134,.4), inset 0 0 22px rgba(0,0,0,.1); }
+
+  /* elektron: bulatan gelap dengan simbol minus di tengah, dipakai di Thomson/Rutherford/Bohr */
+  .e-dot{
+    width:15px; height:15px; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #fff9, transparent 45%), linear-gradient(140deg,#2B3350,var(--ink));
+    box-shadow:0 3px 8px rgba(0,0,0,.35);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:10px; font-weight:800; line-height:1; user-select:none;
+  }
+
+  .ruth-boundary{ width:190px; height:190px; border-radius:50%; border:2px dashed var(--blue-300); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:.7; }
+
+  .ring-tilt{ position:absolute; top:0; left:0; width:0; height:0; transform-style:preserve-3d; }
+  .bohr-ring-visual{ position:absolute; border:1.5px solid var(--blue-300); border-radius:50%; opacity:.85; }
+  .orbit-pivot{ position:absolute; top:0; left:0; width:0; height:0; transform-style:preserve-3d; }
+
+  .quantum-cloud-node{ border-radius:50%; filter:blur(7px);
+    background:radial-gradient(circle, rgba(255,111,178,.6) 0%, rgba(56,166,255,.4) 45%, transparent 75%); }
+
+  /* dipakai khusus ilustrasi statis di Galeri Betulkan Kesalahan (tidak perlu 3D) */
+  .atom-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .quantum-cloud{ border-radius:50%; filter:blur(6px);
+    background:radial-gradient(circle, rgba(255,111,178,.55) 0%, rgba(56,166,255,.35) 45%, transparent 75%); }
+  .bohr-ring{ border:1.5px solid var(--blue-300); border-radius:50%; }
+
+  @keyframes cloudpulse{ 0%,100%{ opacity:.7; } 50%{ opacity:1; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .trail-path, .atom3d-root, .orbit-pivot, .quantum-cloud-node{ animation:none !important; }
+    .e-dot{ transition:none !important; }
+  }
+
+  /* ---------- WORKSHEET ---------- */
+  .worksheet{ margin-top:26px; }
+  .ws-table-wrap{ overflow-x:auto; border-radius:var(--r-md); border:1px solid var(--line); }
+  table.ws{ width:100%; border-collapse:collapse; min-width:720px; background:var(--bg-alt); }
+  table.ws th{ text-align:left; font-family:var(--font-display); font-size:12.5px; color:var(--ink-soft);
+    background:var(--blue-100); padding:10px 12px; position:sticky; top:0; }
+  table.ws td{ padding:10px 12px; border-top:1px solid var(--line); vertical-align:top; }
+  table.ws td.model-name{ font-weight:700; font-family:var(--font-display); white-space:nowrap; color:var(--pink-700); }
+  table.ws textarea{
+    width:100%; min-height:64px; resize:vertical; border-radius:var(--r-sm);
+    border:1.5px solid var(--line); padding:8px 10px; font-size:13.5px; background:var(--bg);
+    color:var(--ink);
+  }
+  table.ws textarea:focus{ border-color:var(--blue-500); }
+
+  .reinforce{ margin-top:22px; display:flex; flex-direction:column; gap:14px; }
+  .reinforce .q{ background:var(--bg-alt); border:1px solid var(--line); border-radius:var(--r-md); padding:16px; }
+  .reinforce .q p.qtext{ font-size:14px; font-weight:600; margin-bottom:8px; }
+  .reinforce textarea{ width:100%; min-height:60px; border-radius:var(--r-sm); border:1.5px solid var(--line); padding:10px; font-size:13.5px; background:var(--bg); color:var(--ink); }
+
+  .save-pill{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--blue-700); font-weight:700; margin-top:6px; }
+  .save-pill .dot{ width:6px; height:6px; border-radius:50%; background:var(--blue-500); }
+
+  /* ---------- ENGAGEMENT ---------- */
+  #screen-engagement{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;
+    background:
+      radial-gradient(circle at 12% 18%, var(--pink-100) 0%, transparent 45%),
+      radial-gradient(circle at 88% 82%, var(--blue-100) 0%, transparent 45%),
+      var(--bg);
+  }
+  .engage-options{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:26px; }
+  @media (max-width:560px){ .engage-options{ grid-template-columns:1fr; } }
+  .engage-opt{
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    background:var(--bg-alt); border:1.5px solid var(--line); border-radius:var(--r-lg);
+    padding:18px 14px; box-shadow:var(--shadow-soft); text-align:center;
+  }
+  .engage-opt:hover{ border-color:var(--pink-500); }
+  .engage-opt.chosen{ border-color:var(--pink-500); background:var(--pink-100); box-shadow:var(--shadow); }
+  .engage-icon{ width:64px; height:64px; display:flex; align-items:center; justify-content:center; }
+  .engage-label{ font-size:12.5px; font-weight:700; color:var(--ink-soft); }
+  .mini-dalton{ width:44px; height:44px; border-radius:50%; background:linear-gradient(140deg,var(--blue-500),var(--blue-700)); display:block; }
+  .mini-thomson{ width:44px; height:44px; border-radius:50%; background:linear-gradient(140deg,var(--pink-300),var(--pink-500)); position:relative; display:block; }
+  .mini-thomson::before, .mini-thomson::after{ content:""; position:absolute; width:6px; height:6px; border-radius:50%; background:var(--ink); }
+  .mini-thomson::before{ top:12px; left:10px; }
+  .mini-thomson::after{ bottom:10px; right:8px; }
+  .mini-orbit{ width:44px; height:44px; border:1.5px solid var(--blue-300); border-radius:50%; position:relative; display:block; }
+  .mini-orbit::before{ content:""; position:absolute; width:8px; height:8px; border-radius:50%; background:var(--blue-700); top:50%; left:50%; transform:translate(-50%,-50%); }
+  .mini-orbit::after{ content:""; position:absolute; width:6px; height:6px; border-radius:50%; background:var(--pink-500); top:-2px; left:18px; }
+  .mini-cloud{ width:44px; height:44px; border-radius:50%; background:radial-gradient(circle, rgba(255,111,178,.6) 0%, rgba(56,166,255,.4) 45%, transparent 75%); filter:blur(3px); display:block; }
+
+  /* ---------- EXPLANATION TIMELINE ---------- */
+  .explain-timeline{ display:flex; gap:0; align-items:center; overflow-x:auto; padding:14px 6px; }
+  .explain-node{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; position:relative; padding:0 14px; }
+  .explain-node .dotmark{ width:16px; height:16px; border-radius:50%; background:var(--bg-alt); border:2.5px solid var(--line); }
+  .explain-node.opened .dotmark{ background:var(--blue-500); border-color:var(--blue-500); }
+  .explain-node.current .dotmark{ background:var(--pink-500); border-color:var(--pink-500); box-shadow:0 0 0 5px rgba(255,111,178,.2); }
+  .explain-node .lbl{ font-size:11px; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+  .explain-line{ flex:1 1 30px; height:2px; background:var(--line); min-width:20px; }
+  .explain-line.opened{ background:var(--blue-300); }
+
+  /* ---------- ELABORATION SUBTABS ---------- */
+  .subtabs{ display:flex; gap:8px; margin-bottom:18px; }
+  .subtab-btn{ padding:9px 18px; border-radius:999px; border:1.5px solid var(--line); background:var(--bg-alt);
+    font-family:var(--font-display); font-weight:700; font-size:13.5px; color:var(--ink-soft); }
+  .subtab-btn.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  /* card sort */
+  .howto-box{
+    background:var(--blue-100); border:1.5px solid var(--blue-300);
+    border-radius:var(--r-md); padding:16px 18px 16px 34px; margin-bottom:18px;
+  }
+  .howto-box h4{ font-family:var(--font-display); font-size:14px; color:var(--blue-700); margin:0 0 8px -12px; }
+  .howto-box ol{ margin:0; padding-left:14px; display:flex; flex-direction:column; gap:7px; }
+  .howto-box li{ font-size:13.5px; color:var(--ink); }
+  .howto-box li::marker{ font-weight:800; color:var(--pink-700); }
+  .cardsort-score{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    margin-bottom:16px;
+  }
+  .score-chip{ background:var(--pink-100); color:var(--pink-700); font-weight:800; font-family:var(--font-display);
+    padding:8px 16px; border-radius:999px; font-size:14px; }
+  .pool{
+    display:flex; flex-wrap:wrap; gap:10px; padding:16px; background:var(--blue-100);
+    border-radius:var(--r-lg); min-height:70px; margin-bottom:20px;
+  }
+  .postcard{
+    background:var(--bg-alt); border:2px solid var(--line); border-radius:var(--r-md);
+    padding:12px 14px; font-size:13px; max-width:220px; cursor:pointer;
+    box-shadow:var(--shadow-soft); position:relative; font-weight:600;
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .postcard::before{ content:"✉"; position:absolute; top:8px; right:10px; opacity:.25; font-size:14px; }
+  .postcard:hover{ transform:translateY(-2px); border-color:var(--blue-500); }
+  .postcard.selected{ border-color:var(--pink-500); box-shadow:0 0 0 3px rgba(255,111,178,.25); }
+  .postcard.correct{ border-color:var(--blue-500); background:var(--blue-100); cursor:default; opacity:.85; }
+  .postcard.correct::before{ content:"✓"; opacity:.6; color:var(--blue-700); }
+
+  .stations-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  @media (max-width:760px){ .stations-grid{ grid-template-columns:repeat(2,1fr); } }
+  .station-bin{
+    border:2px dashed var(--line); border-radius:var(--r-md); padding:12px;
+    min-height:120px; display:flex; flex-direction:column; gap:8px;
+    background:var(--bg-alt);
+  }
+  .station-bin h4{ font-family:var(--font-display); font-size:13px; text-align:center; color:var(--ink-soft); }
+  .station-bin.flash-correct{ border-color:var(--blue-500); background:var(--blue-100); }
+  .station-bin.flash-wrong{ border-color:var(--pink-500); background:var(--pink-100); animation:shake .3s; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
+  .mini-card{ font-size:11.5px; background:var(--bg); border-radius:8px; padding:6px 8px; font-weight:700; }
+
+  .feedback-box{
+    margin-top:14px; padding:14px 16px; border-radius:var(--r-md); font-size:13.5px; display:none;
+  }
+  .feedback-box.correct{ background:var(--blue-100); color:var(--blue-700); border:1px solid var(--blue-300); }
+  .feedback-box.wrong{ background:var(--pink-100); color:var(--pink-700); border:1px solid var(--pink-300); }
+
+  .cardsort-actions{ margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* gallery */
+  .gallery-case{
+    background:var(--bg-alt); border:1px solid var(--line); border-radius:var(--r-lg);
+    padding:20px; margin-bottom:18px; box-shadow:var(--shadow-soft);
+    display:flex; gap:20px; flex-wrap:wrap;
+  }
+  .gallery-visual{ flex:0 0 140px; height:130px; position:relative; background:var(--pink-100); border-radius:var(--r-md); }
+  .gallery-body{ flex:1; min-width:220px; }
+  .gallery-case .kase-label{ font-size:11.5px; font-weight:800; color:var(--pink-700); font-family:var(--font-display); }
+  .gallery-case .statement{ font-style:italic; color:var(--ink); margin:8px 0 12px; font-size:14.5px; line-height:1.5; }
+  .gallery-case textarea{ width:100%; min-height:80px; border-radius:var(--r-sm); border:1.5px solid var(--line); padding:10px; font-size:13.5px; background:var(--bg); color:var(--ink); }
+
+  /* wrong illustrations (small svgs) */
+  .wrong-orbit-set{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .wrong-ring{ position:absolute; border:1.5px solid var(--blue-300); border-radius:50%; transform:translate(-50%,-50%); }
+  .wrong-e{ position:absolute; width:13px; height:13px; border-radius:50%; background:linear-gradient(140deg,#2B3350,var(--ink));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:8px; font-weight:800; }
+  .wrong-surface-ball{ width:100px; height:100px; border-radius:50%; background:linear-gradient(140deg,var(--pink-300),var(--pink-500)); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .wrong-surface-e{ position:absolute; width:13px; height:13px; border-radius:50%; background:linear-gradient(140deg,#2B3350,var(--ink));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:8px; font-weight:800; }
+  .wrong-x-nucleus{ width:100px; height:100px; border-radius:50%; background:linear-gradient(140deg,var(--blue-500),var(--blue-700)); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:.5; }
+  .wrong-tag{ position:absolute; top:6px; left:6px; background:var(--ink); color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:999px; }
+
+  footer.app-footer{ text-align:center; color:var(--ink-soft); font-size:12px; padding:30px 20px 10px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= LOGIN SCREEN ================= -->
+  <section id="screen-login">
+    <div class="login-card">
+      <span class="eyebrow-badge">🪐 Kimia Kelas X · Perkembangan Model Atom</span>
+      <h1 class="brand-title">ATOM JOURNEY</h1>
+      <p class="brand-sub">A Journey Through the Development of Atomic Models</p>
+
+      <svg class="trailmap" viewBox="0 0 560 90" fill="none">
+        <path class="trail-path" d="M20,60 C100,10 160,90 230,45 C300,0 340,80 410,40 C460,12 500,55 540,30" />
+        <g class="trail-node"><circle cx="20" cy="60" r="14"/><text x="20" y="64" text-anchor="middle">D</text></g>
+        <g class="trail-node"><circle cx="164" cy="55" r="14"/><text x="164" y="59" text-anchor="middle">T</text></g>
+        <g class="trail-node"><circle cx="300" cy="35" r="14"/><text x="300" y="39" text-anchor="middle">R</text></g>
+        <g class="trail-node"><circle cx="420" cy="48" r="14"/><text x="420" y="52" text-anchor="middle">B</text></g>
+        <g class="trail-node finish"><circle cx="540" cy="30" r="16"/><text x="540" y="34" text-anchor="middle">Q</text></g>
+      </svg>
+
+      <p class="login-copy">Ikuti jejak lima ilmuwan yang mengubah cara kita membayangkan atom — dari bola pejal Dalton sampai awan probabilitas mekanika kuantum. Isi identitasmu untuk mulai perjalanan.</p>
+
+      <form class="login-form" id="loginForm">
+        <div class="welcome-back" id="welcomeBack"></div>
+        <div class="field">
+          <label for="inpNama">Nama Lengkap</label>
+          <input id="inpNama" type="text" placeholder="Tulis nama lengkapmu" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="inpKelas">Kelas</label>
+          <input id="inpKelas" type="text" placeholder="Contoh: X-2" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Mulai Perjalanan 🚀</button>
+        <p class="login-note">Progresmu tersimpan otomatis di perangkat ini — jika terputus, cukup isi nama &amp; kelas yang sama untuk melanjutkan.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= ENGAGEMENT SCREEN (muncul sekali sebelum modul utama) ================= -->
+  <section id="screen-engagement" hidden>
+    <div class="login-card">
+      <span class="eyebrow-badge">✨ Sebelum Mulai</span>
+      <h2 style="font-size:clamp(22px,4vw,30px);">Menurutmu, atom itu seperti apa?</h2>
+      <p class="login-copy">Pilih salah satu gambaran yang menurutmu paling tepat. Tidak ada jawaban benar/salah di sini — jawabanmu akan dibahas bersama gurumu.</p>
+      <div class="engage-options" id="engageOptions">
+        <button type="button" class="engage-opt" data-val="pejal">
+          <span class="engage-icon"><span class="mini-dalton"></span></span>
+          <span class="engage-label">Bola padat, tidak ada isinya</span>
+        </button>
+        <button type="button" class="engage-opt" data-val="isi-titik">
+          <span class="engage-icon"><span class="mini-thomson"></span></span>
+          <span class="engage-label">Bola berisi titik-titik kecil di dalamnya</span>
+        </button>
+        <button type="button" class="engage-opt" data-val="tata-surya">
+          <span class="engage-icon"><span class="mini-orbit"></span></span>
+          <span class="engage-label">Mirip tata surya, ada yang mengelilingi pusatnya</span>
+        </button>
+        <button type="button" class="engage-opt" data-val="awan">
+          <span class="engage-icon"><span class="mini-cloud"></span></span>
+          <span class="engage-label">Seperti awan buram di sekitar pusatnya</span>
+        </button>
+      </div>
+      <p class="login-note" id="engageNote">Klik salah satu pilihan untuk lanjut.</p>
+    </div>
+  </section>
+
+  <!-- ================= APP SHELL ================= -->
+  <section id="screen-app" hidden>
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="logo-mini"><span class="dot"></span> Atom Journey</div>
+        <div class="student-badge">
+          <span class="avatar" id="avatarInitial">A</span>
+          <span id="studentLabel">—</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="module-trail">
+      <div class="module-tab active" data-module="exploration">🔭 Eksplorasi</div>
+      <div class="module-tab" data-module="explanation">📖 Penjelasan</div>
+      <div class="module-tab" data-module="elaboration">🧩 Elaborasi</div>
+    </nav>
+
+    <main>
+      <!-- EXPLORATION PANEL -->
+      <section id="panel-exploration">
+        <div class="panel-head">
+          <h2>Bandingkan Model Atom</h2>
+          <p>Klik tiap tokoh untuk mengamati gambarannya. Belum ada jawaban benar/salah di sini — tulis apa yang benar-benar kamu amati pada lembar kerja di bawah.</p>
+        </div>
+
+        <div class="station-row" id="stationRow"></div>
+
+        <div class="stage" id="stageBox">
+          <div class="stage-visual" id="stageVisual"></div>
+          <div class="stage-info">
+            <div class="yr" id="stageYear"></div>
+            <h3 id="stageName"></h3>
+            <p class="stage-hint">Amati bentuk, posisi elektron, dan pergerakannya. Catat pengamatanmu di tabel bawah.</p>
+            <div class="stage-nav">
+              <button type="button" id="prevStation">← Sebelumnya</button>
+              <button type="button" id="nextStation">Selanjutnya →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="worksheet">
+          <h3 style="font-size:18px;margin-bottom:10px;">Lembar Kerja Eksplorasi</h3>
+          <div class="ws-table-wrap">
+            <table class="ws">
+              <thead>
+                <tr>
+                  <th style="width:110px;">Model</th>
+                  <th>Inti Gambaran</th>
+                  <th>Hal Baru Dibanding Model Sebelumnya</th>
+                  <th>Hal yang Membuatmu Bertanya-tanya</th>
+                </tr>
+              </thead>
+              <tbody id="wsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="reinforce" id="reinforceQs"></div>
+          <div class="save-pill"><span class="dot"></span> Tersimpan otomatis di perangkat ini</div>
+        </div>
+      </section>
+
+      <!-- EXPLANATION PANEL (Timeline Progresif — dioperasikan guru) -->
+      <section id="panel-explanation" hidden>
+        <div class="panel-head">
+          <h2>Timeline Perkembangan Model Atom</h2>
+          <p>Klik tiap titik tahun secara berurutan — gurumu akan menjelaskan istilah formalnya sambil kamu melihat gambar yang sama seperti di Eksplorasi.</p>
+        </div>
+        <div class="explain-timeline" id="explainTimeline"></div>
+        <div class="stage" id="explainStage" style="margin-top:18px;">
+          <div class="stage-visual" id="explainVisual"></div>
+          <div class="stage-info">
+            <div class="yr" id="explainYear">—</div>
+            <h3 id="explainName">Klik salah satu titik tahun di atas</h3>
+            <p class="stage-hint" id="explainKey"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ELABORATION PANEL -->
+      <section id="panel-elaboration" hidden>
+        <div class="panel-head">
+          <h2>Uji &amp; Perkuat Pemahamanmu</h2>
+          <p>Bagian ini punya jawaban benar/salah — kerjakan setelah gurumu menjelaskan istilah formalnya.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="subtab-btn active" data-sub="cardsort">🗂️ Kartu Sortir</button>
+          <button class="subtab-btn" data-sub="gallery">🖼️ Betulkan Kesalahan</button>
+        </div>
+
+        <div id="sub-cardsort">
+          <div class="howto-box">
+            <h4>🧭 Cara Mengerjakan</h4>
+            <ol>
+              <li><strong>Klik salah satu kartu</strong> pada kotak biru di bawah untuk memilihnya — kartu yang dipilih akan bertanda garis pink.</li>
+              <li><strong>Klik kolom nama tokoh</strong> (Dalton/Thomson/Rutherford/Bohr/Mekanika Kuantum) yang menurutmu paling sesuai dengan isi kartu itu.</li>
+              <li>Sistem langsung menampilkan apakah jawabanmu <strong>benar atau salah</strong>, lengkap dengan penjelasan singkatnya.</li>
+              <li>Kartu yang <strong>benar</strong> akan menetap di kolom tokoh tersebut. Kartu yang <strong>salah</strong> kembali ke kotak biru — klik tombol <strong>"Ulangi kartu yang salah"</strong> untuk mencobanya lagi kapan saja.</li>
+              <li>Selesai jika skor di pojok menunjukkan semua kartu sudah benar.</li>
+            </ol>
+          </div>
+          <div class="cardsort-score">
+            <span class="score-chip" id="scoreChip">Benar: 0 / 0</span>
+            <div class="cardsort-actions">
+              <button type="button" class="btn btn-ghost" id="retryWrong">Ulangi kartu yang salah</button>
+            </div>
+          </div>
+          <div class="pool" id="cardPool"></div>
+          <div class="stations-grid" id="stationsGrid"></div>
+          <div class="feedback-box" id="feedbackBox"></div>
+        </div>
+
+        <div id="sub-gallery" hidden>
+          <div id="galleryCases"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      Atom Journey · Tahap 2 · Data tersimpan di server
+      <br>
+      <button type="button" id="teacherExportBtn" class="btn btn-ghost" style="margin-top:10px;">🔒 Unduh Data (Khusus Guru)</button>
+    </footer>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- DATA MODELS ---------------- */
+  var MODELS = [
+    { id:"dalton", nama:"Dalton", tahun:"1808" },
+    { id:"thomson", nama:"Thomson", tahun:"1904" },
+    { id:"rutherford", nama:"Rutherford", tahun:"1911" },
+    { id:"bohr", nama:"Bohr", tahun:"1913" },
+    { id:"kuantum", nama:"Mekanika Kuantum", tahun:"Modern" }
+  ];
+
+  var EXPLAIN_KEYPOINTS = {
+    dalton: "Istilah kunci: atom = bagian terkecil, tidak dapat dibagi lagi.",
+    thomson: "Istilah kunci: elektron, muatan positif tersebar merata di dalam.",
+    rutherford: "Istilah kunci: inti atom, ruang kosong, hamburan sinar alfa.",
+    bohr: "Istilah kunci: kulit atom (K, L, M...), tingkat energi terkuantisasi.",
+    kuantum: "Istilah kunci: orbital, daerah kebolehjadian (probabilitas)."
+  };
+
+  var REINFORCE_QS = [
+    "Dari kelima model tadi, dua model mana yang menurutmu paling mirip secara visual sekilas? Setelah kamu amati lebih teliti, apa perbedaan penting yang membuat keduanya sebenarnya berbeda?",
+    "Urutkan kelima model berdasarkan seberapa \"pasti\" posisi elektron digambarkan — mulai dari yang paling pasti/jelas posisinya sampai yang paling tidak pasti/berupa kemungkinan saja.",
+    "Menurut pengamatanmu, adakah model yang terasa \"tiba-tiba meloncat jauh\" perubahannya dibanding model sebelumnya? Model mana, dan apa yang berubah drastis?"
+  ];
+
+  var CARDS = [
+    { id:"c1", text:"Atom itu partikel paling kecil dan tidak bisa dipecah lagi.", model:"dalton", why:"Ini ide utama Dalton: atom digambarkan seperti bola padat, tidak ada isinya." },
+    { id:"c2", text:"Atom berbentuk seperti bola padat, tidak ada bagian di dalamnya.", model:"dalton", why:"Begini bayangan Dalton tentang atom, sebelum elektron dan inti ditemukan." },
+    { id:"c3", text:"Elektron ditemukan lewat percobaan tabung sinar katode. Elektron ini tersebar MERATA DI DALAM bola bermuatan positif.", model:"thomson", why:"Ciri khas Thomson: elektronnya ada DI DALAM bola, bukan menempel di permukaan." },
+    { id:"c4", text:"Sebagian besar atom itu ruang kosong. Ada inti kecil dan padat di tengahnya.", model:"rutherford", why:"Ini kesimpulan dari percobaan penembakan partikel alfa oleh Rutherford." },
+    { id:"c5", text:"Model ini sering digambar mirip \"tata surya\". Tapi elektronnya bergerak bebas, TIDAK punya jalur/lintasan tetap.", model:"rutherford", why:"Beda dengan Bohr — Rutherford tidak bilang elektron punya lintasan atau tingkat energi tertentu." },
+    { id:"c6", text:"Elektron menempati lintasan (disebut kulit) dengan tingkat energi tertentu.", model:"bohr", why:"Ini ide utama Bohr: ada kulit K, L, M dengan tingkat energinya masing-masing." },
+    { id:"c7", text:"Elektron bisa pindah kulit: naik kalau menyerap energi, turun sambil memancarkan cahaya.", model:"bohr", why:"Ide ini yang berhasil menjelaskan garis-garis warna pada spektrum atom hidrogen." },
+    { id:"c8", text:"Model ini pertama kali memakai istilah \"kulit atom\": K, L, M, N, dan seterusnya.", model:"bohr", why:"Istilah \"kulit\" adalah ciri khas Bohr — beda dengan \"orbital\" di mekanika kuantum." },
+    { id:"c9", text:"Posisi elektron digambarkan sebagai daerah kemungkinan (disebut orbital) — bukan jalur pasti seperti \"kulit\".", model:"kuantum", why:"Orbital = daerah kemungkinan ditemukannya elektron. Ini ide inti mekanika kuantum." },
+    { id:"c10", text:"Elektron punya sifat gelombang sekaligus partikel.", model:"kuantum", why:"Ide ini (dari de Broglie) yang mengubah cara kita membayangkan posisi elektron." }
+  ];
+
+  var GALLERY_CASES = [
+    {
+      id:"g1", label:"Kasus 1 — Rutherford vs Bohr", visual:"g1",
+      statement:"\"Ini gambar model atom Rutherford. Elektronnya punya lintasan bertingkat energi n=1, n=2, dan n=3.\""
+    },
+    {
+      id:"g2", label:"Kasus 2 — Model Thomson", visual:"g2",
+      statement:"\"Ini model atom Thomson: elektron-elektronnya menempel di permukaan bola positif, seperti kismis yang ditaburkan di atas roti.\""
+    },
+    {
+      id:"g3", label:"Kasus 3 — Awan Elektron", visual:"g3",
+      statement:"\"Di model mekanika kuantum, sebenarnya elektron tetap ada di satu titik pasti, seperti planet mengelilingi matahari. Cuma digambar sebagai 'awan' biar kelihatan lebih modern.\""
+    },
+    {
+      id:"g4", label:"Kasus 4 — Hubungan Antar Model", visual:"g4",
+      statement:"\"Model Bohr kan lebih bagus dari Rutherford. Jadi, model Rutherford sekarang sudah tidak berguna dan sepenuhnya salah.\""
+    },
+    {
+      id:"g5", label:"Kasus 5 — Kulit vs Orbital", visual:"g5",
+      statement:"\"Istilah 'kulit atom' dan 'orbital' itu sama saja — dua-duanya cuma menjelaskan tempat elektron berada.\""
+    }
+  ];
+
+  /* ---------------- STORAGE HELPERS ---------------- */
+  function safeGet(key){
+    try{ var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }catch(e){ return null; }
+  }
+  function safeSet(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* ignore */ }
+  }
+  function slug(s){ return s.toLowerCase().trim().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,""); }
+
+  var studentId = null;
+  var state = null; // full data object for this student
+  var API_BASE = ""; // server berjalan satu origin dengan halaman ini
+  var serverStudentId = null;
+  var syncTimers = {};
+
+  function emptyState(){
+    return {
+      nama:"", kelas:"",
+      engagement:{ pilihan:null },
+      exploration:{ ws:{}, reinforce:["","",""] },
+      cardsort:{ placed:{}, correctCount:0 },
+      gallery:{}
+    };
+  }
+
+  function loadOrCreate(nama, kelas){
+    studentId = "atomjourney_" + slug(nama) + "_" + slug(kelas);
+    var existing = safeGet(studentId);
+    if(existing){ state = existing; return true; }
+    state = emptyState();
+    state.nama = nama; state.kelas = kelas;
+    persist();
+    return false;
+  }
+  function persist(){ safeSet(studentId, state); }
+
+  // Kirim data ke server (didebounce). section: "exploration" atau "elaboration".
+  // Data engagement dititipkan bersama "exploration" (supaya tidak perlu tabel baru di server).
+  // Kalau server belum aktif/terjangkau (mis. saat hanya pratinjau lokal), ini gagal diam-diam
+  // dan progres tetap aman tersimpan di localStorage perangkat.
+  function scheduleSync(section){
+    if(!serverStudentId) return;
+    clearTimeout(syncTimers[section]);
+    syncTimers[section] = setTimeout(function(){
+      var payload = (section === "exploration")
+        ? { ws: state.exploration.ws, reinforce: state.exploration.reinforce, engagement: state.engagement }
+        : { cardsort: state.cardsort, gallery: state.gallery };
+      fetch(API_BASE + "/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId: serverStudentId, section: section, data: payload })
+      }).catch(function(){ /* offline / server belum di-deploy: abaikan, tetap aman di localStorage */ });
+    }, 700);
+  }
+
+  /* ---------------- LOGIN SCREEN LOGIC ---------------- */
+  var loginForm = document.getElementById("loginForm");
+  var inpNama = document.getElementById("inpNama");
+  var inpKelas = document.getElementById("inpKelas");
+  var welcomeBack = document.getElementById("welcomeBack");
+
+  inpKelas.addEventListener("input", function(){
+    var id = "atomjourney_" + slug(inpNama.value) + "_" + slug(inpKelas.value);
+    if(inpNama.value.trim() && inpKelas.value.trim() && safeGet(id)){
+      welcomeBack.style.display = "block";
+      welcomeBack.textContent = "👋 Sepertinya kamu pernah mulai perjalanan ini — progresmu akan dilanjutkan.";
+    } else {
+      welcomeBack.style.display = "none";
+    }
+  });
+  inpNama.addEventListener("input", function(){ inpKelas.dispatchEvent(new Event("input")); });
+
+  loginForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    var nama = inpNama.value.trim();
+    var kelas = inpKelas.value.trim();
+    if(!nama || !kelas) return;
+    loadOrCreate(nama, kelas); // siapkan versi lokal dulu agar tetap jalan walau server belum aktif
+
+    function tampilkanApp(){
+      document.getElementById("screen-login").hidden = true;
+      document.getElementById("screen-engagement").hidden = true;
+      document.getElementById("screen-app").hidden = false;
+      document.getElementById("studentLabel").textContent = nama + " · " + kelas;
+      document.getElementById("avatarInitial").textContent = nama.trim().charAt(0).toUpperCase();
+      initExploration();
+      initExplanation();
+      initCardsort();
+      initGallery();
+    }
+
+    function lanjutkanSetelahLogin(){
+      document.getElementById("screen-login").hidden = true;
+      if(state.engagement && state.engagement.pilihan){
+        tampilkanApp(); // sudah pernah menjawab Engagement sebelumnya, langsung ke aplikasi utama
+      } else {
+        document.getElementById("screen-engagement").hidden = false;
+        initEngagement(tampilkanApp);
+      }
+    }
+
+    fetch(API_BASE + "/api/student", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nama: nama, kelas: kelas })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.studentId){
+        serverStudentId = res.studentId;
+        // Data server jadi acuan utama kalau sebelumnya sudah pernah tersimpan di sana
+        if(res.exploration){
+          if(res.exploration.ws) state.exploration.ws = res.exploration.ws;
+          if(res.exploration.reinforce) state.exploration.reinforce = res.exploration.reinforce;
+          if(res.exploration.engagement) state.engagement = res.exploration.engagement;
+        }
+        if(res.elaboration){
+          if(res.elaboration.cardsort) state.cardsort = res.elaboration.cardsort;
+          if(res.elaboration.gallery) state.gallery = res.elaboration.gallery;
+        }
+        persist();
+      }
+    }).catch(function(){ /* server belum di-deploy (mis. sedang pratinjau lokal) -> lanjut mode localStorage saja */ })
+      .then(lanjutkanSetelahLogin);
+  });
+
+  /* ---------------- ENGAGEMENT ---------------- */
+  function initEngagement(onDone){
+    var opts = document.querySelectorAll(".engage-opt");
+    var note = document.getElementById("engageNote");
+    opts.forEach(function(btn){
+      btn.classList.remove("chosen");
+      btn.onclick = function(){
+        opts.forEach(function(b){ b.classList.remove("chosen"); });
+        btn.classList.add("chosen");
+        state.engagement.pilihan = btn.getAttribute("data-val");
+        persist();
+        scheduleSync("exploration");
+        note.textContent = "Terima kasih! Jawabanmu akan dibahas bersama gurumu. Lanjut ke perjalanan...";
+        setTimeout(onDone, 900);
+      };
+    });
+  }
+
+  /* ---------------- MODULE TABS ---------------- */
+  var moduleTabs = document.querySelectorAll(".module-tab");
+  moduleTabs.forEach(function(tab){
+    tab.addEventListener("click", function(){
+      moduleTabs.forEach(function(t){ t.classList.remove("active"); });
+      tab.classList.add("active");
+      var mod = tab.getAttribute("data-module");
+      document.getElementById("panel-exploration").hidden = (mod !== "exploration");
+      document.getElementById("panel-explanation").hidden = (mod !== "explanation");
+      document.getElementById("panel-elaboration").hidden = (mod !== "elaboration");
+    });
+  });
+
+  var subtabBtns = document.querySelectorAll(".subtab-btn");
+  subtabBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      subtabBtns.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var sub = btn.getAttribute("data-sub");
+      document.getElementById("sub-cardsort").hidden = (sub !== "cardsort");
+      document.getElementById("sub-gallery").hidden = (sub !== "gallery");
+    });
+  });
+
+  /* ---------------- EXPLORATION: STATIONS + VISUALS ---------------- */
+  var currentStationIndex = 0;
+
+  function thomsonElectronPoints3D(n, rMax){
+    // Sebaran 3D merata di dalam volume bola (bukan cuma permukaan), pakai golden-angle spiral
+    var pts = [];
+    var golden = Math.PI * (3 - Math.sqrt(5));
+    for(var i = 0; i < n; i++){
+      var t = (i + 0.5) / n;
+      var r = rMax * Math.cbrt(t);
+      var phi = Math.acos(1 - 2 * t);
+      var theta = i * golden;
+      var x = r * Math.sin(phi) * Math.cos(theta);
+      var y = r * Math.sin(phi) * Math.sin(theta);
+      var z = r * Math.cos(phi);
+      pts.push([x, y, z]);
+    }
+    return pts;
+  }
+
+  var rutherfordTimers = [];
+  function clearRutherfordTimers(){
+    rutherfordTimers.forEach(function(t){ clearTimeout(t); });
+    rutherfordTimers = [];
+  }
+  function animateRutherfordElectrons(container){
+    clearRutherfordTimers();
+    var electrons = container.querySelectorAll(".ruth-e-node");
+    var minR = 16, maxR = 82;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    electrons.forEach(function(el, idx){
+      function randomSpot(){
+        // titik acak di dalam bola 3D (bukan sekadar lingkaran datar), tanpa pola/level tertentu
+        var u = Math.random(), v = Math.random(), w = Math.random();
+        var theta = u * Math.PI * 2;
+        var phi = Math.acos(2 * v - 1);
+        var r = minR + Math.cbrt(w) * (maxR - minR);
+        return {
+          x: r * Math.sin(phi) * Math.cos(theta),
+          y: r * Math.sin(phi) * Math.sin(theta),
+          z: r * Math.cos(phi)
+        };
+      }
+      function apply(p){
+        el.style.transform = "translate3d(" + (p.x-7.5).toFixed(1) + "px," + (p.y-7.5).toFixed(1) + "px," + p.z.toFixed(1) + "px)";
+      }
+      if(reduceMotion){ apply(randomSpot()); return; }
+      function moveToRandomSpot(){
+        if(!document.body.contains(el)) return; // hentikan jika elemen sudah tidak ada (pindah tab)
+        var duration = 1.2 + Math.random() * 1.4;
+        el.style.transition = "transform " + duration.toFixed(2) + "s ease-in-out";
+        apply(randomSpot());
+        var nextDelay = (duration * 1000) + 300 + Math.random() * 1200;
+        rutherfordTimers.push(setTimeout(moveToRandomSpot, nextDelay));
+      }
+      rutherfordTimers.push(setTimeout(moveToRandomSpot, idx * 260));
+    });
+  }
+
+  function renderAtomVisual(modelId){
+    switch(modelId){
+      case "dalton":
+        return '<div class="atom3d-root"><div class="node3d" style="transform:translate3d(-75px,-75px,0);"><div class="nucleus-big"></div></div></div>';
+
+      case "thomson":
+        return '<div class="atom3d-root"><div class="node3d" style="transform:translate3d(-75px,-75px,0);"><div class="thomson-ball"></div></div>' +
+          thomsonElectronPoints3D(18, 58).map(function(p){
+            return '<div class="node3d e-dot" style="transform:translate3d(' + (p[0]-7.5).toFixed(1) + 'px,' + (p[1]-7.5).toFixed(1) + 'px,' + p[2].toFixed(1) + 'px);">&minus;</div>';
+          }).join("") + '</div>';
+
+      case "rutherford":
+        return '<div class="ruth-boundary"></div>' +
+          '<div class="atom3d-root no-spin">' +
+          '<div class="node3d" style="transform:translate3d(-10px,-10px,0);"><div class="nucleus-tiny" style="width:20px;height:20px;"></div></div>' +
+          '<div class="node3d e-dot ruth-e-node" style="transform:translate3d(-7.5px,30px,0);">&minus;</div>' +
+          '<div class="node3d e-dot ruth-e-node" style="transform:translate3d(40px,-20px,10px);">&minus;</div>' +
+          '<div class="node3d e-dot ruth-e-node" style="transform:translate3d(-45px,10px,-15px);">&minus;</div>' +
+          '<div class="node3d e-dot ruth-e-node" style="transform:translate3d(10px,-45px,15px);">&minus;</div>' +
+          '</div>';
+
+      case "bohr":
+        var rings = [ {r:40, tiltX:60, dur:3}, {r:65, tiltX:70, dur:5}, {r:90, tiltX:78, dur:7.5} ];
+        return '<div class="atom3d-root">' +
+          '<div class="node3d" style="transform:translate3d(-10px,-10px,0);"><div class="nucleus-tiny" style="width:20px;height:20px;"></div></div>' +
+          rings.map(function(ring){
+            return '<div class="ring-tilt" style="transform:rotateX(' + ring.tiltX + 'deg);">' +
+              '<div class="bohr-ring-visual" style="width:' + (ring.r*2) + 'px;height:' + (ring.r*2) + 'px; margin:-' + ring.r + 'px 0 0 -' + ring.r + 'px;"></div>' +
+              '<div class="orbit-pivot" style="animation:spin3dz ' + ring.dur + 's linear infinite;">' +
+                '<div class="e-dot" style="position:absolute; transform:translate3d(' + (ring.r-7.5) + 'px,-7.5px,0);">&minus;</div>' +
+              '</div>' +
+            '</div>';
+          }).join("") +
+          '</div>';
+
+      case "kuantum":
+        var blobs = [ [0,0,0,150], [20,-15,30,70], [-25,20,-25,65], [15,30,20,55], [-20,-25,-15,60] ];
+        return '<div class="atom3d-root">' +
+          blobs.map(function(b, i){
+            return '<div class="node3d quantum-cloud-node" style="width:' + b[3] + 'px;height:' + b[3] + 'px; transform:translate3d(' + (b[0]-b[3]/2) + 'px,' + (b[1]-b[3]/2) + 'px,' + b[2] + 'px); animation:cloudpulse ' + (2.6 + i*0.4) + 's ease-in-out infinite;"></div>';
+          }).join("") +
+          '<div class="node3d" style="transform:translate3d(-10px,-10px,0); z-index:2;"><div class="nucleus-tiny" style="width:20px;height:20px;"></div></div>' +
+          '</div>';
+    }
+    return "";
+  }
+
+  function renderStations(){
+    var row = document.getElementById("stationRow");
+    row.innerHTML = "";
+    MODELS.forEach(function(m, i){
+      var btn = document.createElement("div");
+      btn.className = "station-btn" + (i === currentStationIndex ? " active" : "");
+      if(state.exploration.ws[m.id] && state.exploration.ws[m.id].gambaran) btn.classList.add("done");
+      btn.innerHTML = '<span class="yr">' + m.tahun + '</span><span class="nm">' + m.nama + '</span>';
+      btn.addEventListener("click", function(){ setStation(i); });
+      row.appendChild(btn);
+    });
+  }
+
+  function setStation(i){
+    currentStationIndex = ((i % MODELS.length) + MODELS.length) % MODELS.length;
+    var m = MODELS[currentStationIndex];
+    clearRutherfordTimers();
+    document.getElementById("stageYear").textContent = m.tahun;
+    document.getElementById("stageName").textContent = m.nama;
+    var stageVisual = document.getElementById("stageVisual");
+    stageVisual.innerHTML = renderAtomVisual(m.id);
+    if(m.id === "rutherford"){ animateRutherfordElectrons(stageVisual); }
+    renderStations();
+  }
+
+  document.getElementById("prevStation").addEventListener("click", function(){ setStation(currentStationIndex - 1); });
+  document.getElementById("nextStation").addEventListener("click", function(){ setStation(currentStationIndex + 1); });
+
+  /* ---------------- EXPLANATION: TIMELINE PROGRESIF ---------------- */
+  function initExplanation(){
+    var timeline = document.getElementById("explainTimeline");
+    timeline.innerHTML = "";
+    MODELS.forEach(function(m, i){
+      var node = document.createElement("div");
+      node.className = "explain-node";
+      node.innerHTML = '<span class="dotmark"></span><span class="lbl">' + m.tahun + '</span>';
+      node.addEventListener("click", function(){ openExplainNode(i); });
+      timeline.appendChild(node);
+      if(i < MODELS.length - 1){
+        var line = document.createElement("div");
+        line.className = "explain-line";
+        timeline.appendChild(line);
+      }
+    });
+  }
+
+  function openExplainNode(i){
+    var m = MODELS[i];
+    var nodes = document.querySelectorAll("#explainTimeline .explain-node");
+    var lines = document.querySelectorAll("#explainTimeline .explain-line");
+    nodes.forEach(function(n, idx){
+      n.classList.toggle("current", idx === i);
+      if(idx <= i) n.classList.add("opened");
+    });
+    lines.forEach(function(l, idx){
+      if(idx < i) l.classList.add("opened");
+    });
+    document.getElementById("explainYear").textContent = m.tahun;
+    document.getElementById("explainName").textContent = m.nama;
+    document.getElementById("explainKey").textContent = EXPLAIN_KEYPOINTS[m.id] || "";
+    var visualBox = document.getElementById("explainVisual");
+    clearRutherfordTimers();
+    visualBox.innerHTML = renderAtomVisual(m.id);
+    if(m.id === "rutherford"){ animateRutherfordElectrons(visualBox); }
+  }
+
+  function initExploration(){
+    setStation(0);
+
+    var tbody = document.getElementById("wsBody");
+    tbody.innerHTML = "";
+    MODELS.forEach(function(m){
+      var row = document.createElement("tr");
+      var saved = state.exploration.ws[m.id] || {};
+      row.innerHTML =
+        '<td class="model-name">' + m.nama + '</td>' +
+        '<td><textarea data-model="' + m.id + '" data-field="gambaran" placeholder="Apa yang kamu lihat?">' + (saved.gambaran||"") + '</textarea></td>' +
+        '<td><textarea data-model="' + m.id + '" data-field="baru" placeholder="Apa yang berubah dari model sebelumnya?">' + (saved.baru||"") + '</textarea></td>' +
+        '<td><textarea data-model="' + m.id + '" data-field="tanya" placeholder="Apa yang bikin kamu penasaran?">' + (saved.tanya||"") + '</textarea></td>';
+      tbody.appendChild(row);
+    });
+    tbody.querySelectorAll("textarea").forEach(function(ta){
+      ta.addEventListener("input", function(){
+        var model = ta.getAttribute("data-model");
+        var field = ta.getAttribute("data-field");
+        if(!state.exploration.ws[model]) state.exploration.ws[model] = {};
+        state.exploration.ws[model][field] = ta.value;
+        persist();
+        scheduleSync("exploration");
+        renderStations();
+      });
+    });
+
+    var reBox = document.getElementById("reinforceQs");
+    reBox.innerHTML = "";
+    REINFORCE_QS.forEach(function(q, idx){
+      var div = document.createElement("div");
+      div.className = "q";
+      div.innerHTML = '<p class="qtext">' + (idx+1) + '. ' + q + '</p><textarea data-idx="' + idx + '">' + (state.exploration.reinforce[idx]||"") + '</textarea>';
+      reBox.appendChild(div);
+    });
+    reBox.querySelectorAll("textarea").forEach(function(ta){
+      ta.addEventListener("input", function(){
+        var idx = parseInt(ta.getAttribute("data-idx"), 10);
+        state.exploration.reinforce[idx] = ta.value;
+        persist();
+        scheduleSync("exploration");
+      });
+    });
+  }
+
+  /* ---------------- ELABORATION: CARD SORT ---------------- */
+  var selectedCardId = null;
+
+  function initCardsort(){
+    renderCardsort();
+  }
+
+  function renderCardsort(){
+    var pool = document.getElementById("cardPool");
+    var grid = document.getElementById("stationsGrid");
+    pool.innerHTML = "";
+    grid.innerHTML = "";
+
+    MODELS.forEach(function(m){
+      var bin = document.createElement("div");
+      bin.className = "station-bin";
+      bin.setAttribute("data-model", m.id);
+      var placedHere = Object.keys(state.cardsort.placed).filter(function(cid){
+        return state.cardsort.placed[cid].model === m.id && state.cardsort.placed[cid].correct;
+      });
+      bin.innerHTML = '<h4>' + m.nama + '</h4>' + placedHere.map(function(cid){
+        var c = CARDS.filter(function(x){return x.id===cid;})[0];
+        return '<div class="mini-card">' + c.text.slice(0,46) + (c.text.length>46?'…':'') + '</div>';
+      }).join("");
+      bin.addEventListener("click", function(){ handlePlacement(m.id, bin); });
+      grid.appendChild(bin);
+    });
+
+    var placedCount = 0, correctCount = 0;
+    CARDS.forEach(function(c){
+      var rec = state.cardsort.placed[c.id];
+      if(rec && rec.correct){ placedCount++; correctCount++; return; }
+      var card = document.createElement("div");
+      card.className = "postcard";
+      card.setAttribute("data-id", c.id);
+      card.textContent = c.text;
+      if(selectedCardId === c.id) card.classList.add("selected");
+      card.addEventListener("click", function(){
+        selectedCardId = (selectedCardId === c.id) ? null : c.id;
+        renderCardsort();
+      });
+      pool.appendChild(card);
+    });
+
+    document.getElementById("scoreChip").textContent = "Benar: " + correctCount + " / " + CARDS.length;
+    state.cardsort.correctCount = correctCount;
+    persist();
+    scheduleSync("elaboration");
+  }
+
+  function handlePlacement(modelId, binEl){
+    if(!selectedCardId) return;
+    var card = CARDS.filter(function(c){ return c.id === selectedCardId; })[0];
+    var fb = document.getElementById("feedbackBox");
+    var isCorrect = (card.model === modelId);
+
+    if(isCorrect){
+      state.cardsort.placed[card.id] = { model:modelId, correct:true };
+      binEl.classList.add("flash-correct");
+      fb.className = "feedback-box correct";
+      fb.style.display = "block";
+      fb.textContent = "✓ Tepat! " + card.why;
+    } else {
+      state.cardsort.placed[card.id] = { model:modelId, correct:false };
+      binEl.classList.add("flash-wrong");
+      fb.className = "feedback-box wrong";
+      fb.style.display = "block";
+      var correctModelName = MODELS.filter(function(m){return m.id===card.model;})[0].nama;
+      fb.textContent = "✗ Belum tepat. " + card.why + " (Seharusnya masuk kolom " + correctModelName + ")";
+    }
+    setTimeout(function(){ binEl.classList.remove("flash-correct","flash-wrong"); }, 500);
+    selectedCardId = null;
+    persist();
+    scheduleSync("elaboration");
+    renderCardsort();
+  }
+
+  document.getElementById("retryWrong").addEventListener("click", function(){
+    Object.keys(state.cardsort.placed).forEach(function(cid){
+      if(!state.cardsort.placed[cid].correct) delete state.cardsort.placed[cid];
+    });
+    persist();
+    scheduleSync("elaboration");
+    renderCardsort();
+  });
+
+  /* ---------------- ELABORATION: GALLERY ---------------- */
+  function galleryVisual(kind){
+    if(kind === "g1"){
+      return '<div class="wrong-orbit-set">' +
+        '<div class="wrong-ring" style="width:50px;height:50px;"></div>' +
+        '<div class="wrong-ring" style="width:80px;height:80px;"></div>' +
+        '<span class="wrong-e" style="top:0;left:25px;">&minus;</span>' +
+        '<div class="nucleus-tiny" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>' +
+        '</div>';
+    }
+    if(kind === "g2"){
+      return '<div class="wrong-surface-ball">' +
+        '<span class="wrong-surface-e" style="top:6px;left:40px;">&minus;</span>' +
+        '<span class="wrong-surface-e" style="top:40px;left:2px;">&minus;</span>' +
+        '<span class="wrong-surface-e" style="top:75px;left:60px;">&minus;</span>' +
+        '<span class="wrong-surface-e" style="top:20px;left:85px;">&minus;</span>' +
+        '</div>';
+    }
+    if(kind === "g3"){
+      return '<div class="atom-center"><div class="quantum-cloud" style="width:110px;height:110px;"></div>' +
+        '<span class="wrong-e" style="position:absolute;top:50%;left:75%;">&minus;</span></div>';
+    }
+    if(kind === "g4"){
+      return '<div class="wrong-x-nucleus"></div><div class="wrong-tag" style="left:50%;transform:translateX(-50%);top:65%;">DIANGGAP "SALAH TOTAL"</div>';
+    }
+    if(kind === "g5"){
+      return '<div class="atom-center" style="display:flex;gap:6px;align-items:center;">' +
+        '<div class="bohr-ring" style="position:relative;top:0;left:0;transform:none;width:44px;height:44px;"></div>' +
+        '<div class="quantum-cloud" style="position:relative;top:0;left:0;transform:none;width:44px;height:44px;"></div>' +
+        '</div>';
+    }
+    return "";
+  }
+
+  function initGallery(){
+    var box = document.getElementById("galleryCases");
+    box.innerHTML = "";
+    GALLERY_CASES.forEach(function(g){
+      var div = document.createElement("div");
+      div.className = "gallery-case";
+      var saved = state.gallery[g.id] || "";
+      div.innerHTML =
+        '<div class="gallery-visual">' + galleryVisual(g.visual) + '</div>' +
+        '<div class="gallery-body">' +
+          '<div class="kase-label">' + g.label + '</div>' +
+          '<p class="statement">' + g.statement + '</p>' +
+          '<textarea data-id="' + g.id + '" placeholder="Apa yang salah dari pernyataan ini? Bagaimana seharusnya?">' + saved + '</textarea>' +
+        '</div>';
+      box.appendChild(div);
+    });
+    box.querySelectorAll("textarea").forEach(function(ta){
+      ta.addEventListener("input", function(){
+        state.gallery[ta.getAttribute("data-id")] = ta.value;
+        persist();
+        scheduleSync("elaboration");
+      });
+    });
+  }
+
+  /* ---------------- GURU: UNDUH DATA (TERPROTEKSI PASSWORD) ---------------- */
+  var teacherBtn = document.getElementById("teacherExportBtn");
+  if(teacherBtn){
+    teacherBtn.addEventListener("click", function(){
+      var password = window.prompt("Masukkan password guru:");
+      if(password === null || password === "") return;
+      var kelas = window.prompt("Kelas yang datanya ingin diunduh (contoh: X-2):");
+      if(!kelas) return;
+      var tanggal = window.prompt("Tanggal sesi (format YYYY-MM-DD). Kosongkan untuk memakai tanggal hari ini:");
+      var ymd = (tanggal && tanggal.trim()) ? tanggal.trim() : new Date().toISOString().slice(0,10);
+      var sessionKey = slug(kelas) + "_" + ymd;
+      var url = API_BASE + "/api/export?password=" + encodeURIComponent(password) + "&session=" + encodeURIComponent(sessionKey);
+      window.open(url, "_blank");
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
